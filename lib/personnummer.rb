@@ -10,7 +10,7 @@ class Personnummer
 
     # Match the number
     number = number.to_s
-    if number.match(/(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-\+]{0,1})(\d{3})(\d{0,1})/)
+    if number.match(/(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-\+]{0,1})(\d{3})(\d{0,1})/) && check_year_range(number)
 
       # Calculate the control digit based on the birth date and serial number
       cd = luhn_algorithm("#{$~[2]}#{$~[3]}#{$~[4]}#{$~[6]}")
@@ -117,6 +117,17 @@ private
     end
 
     control_digit
+  end
+
+  # If the personnummer contains 4 digits for year then checks if it comes in correct range or not
+  def check_year_range(number)
+    if number.length == 12
+      year = number[0..3].to_i
+      if year > Time.now.year || year < Time.now.year - 150
+        return false
+      end
+    end
+    return true
   end
 
   def region_name(code)
